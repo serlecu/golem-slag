@@ -152,7 +152,7 @@ async def updateScanResoults(scanner):
       await scanner.start()
       await asyncio.sleep(5)
       await scanner.stop()
-      devices = scanner.discovered_devices
+      # devices = scanner.discovered_devices
   except Exception as e:
       print(f"BLEAK 73: {e}")
 
