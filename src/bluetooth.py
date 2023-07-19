@@ -80,7 +80,6 @@ async def bleakLoopAsync():
         #await scanner.stop()
         g.isScanning = False
         await asyncio.sleep(2)
-        continue
       else:
         # ~ if len(connectingClients) < 1:
             # ~ try:
