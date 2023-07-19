@@ -158,7 +158,9 @@ async def updateScanResoults(scanner):
         else:
             if len(devices) > 16:
                 devices = devices[:16]
+            g.writeDevices = True
             g.foundDevicesBleak = list(devices)
+            g.writeDevices = False
             # ~ g.railSpeed = 50 + ( len(devices) * 5 )
             # ~ g.railDelay = 1.0 - ( len(devices) * 0.07 )
             # if len(devices) > 0:

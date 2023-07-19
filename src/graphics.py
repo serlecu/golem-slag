@@ -77,6 +77,7 @@ def DrawLoop():
     test_text(g.screen, (f"IsScanning: {g.isScanning}"), (g.screen.get_width()/2, 40), (255, 255, 255))
 
     if not g.offlineMode:
+      if not g.writeDevices:
         if(len(g.foundDevicesBleak) > 0):
             debugScannedDevicesColor(g.foundDevicesBleak, g.screen)
         else:

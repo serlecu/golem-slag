@@ -34,6 +34,7 @@ deviceInfo: str
 isScanning: bool
 scannCrono: float = 3.0
 scannFrequency: float = 20.0
+writeDevices = False
 foundDevicesBleak: list#[BLEDevice]
 # ~ matchedClients: list#[BleakClient]
 
@@ -50,7 +51,7 @@ runningBLEserver: bool = False
 
 
 # Offline Mode
-offlineMode: bool = True
+offlineMode: bool = False
 offlineListLen: int
 offlineMacList: list = [
     "SLAG_4e:dc:27 -> e4:5f:1:4e:dc:27",

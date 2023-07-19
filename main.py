@@ -43,7 +43,8 @@ def Update():
   import src.globals as g
   
   if not g.offlineMode:
-    scan_thread = threading.Thread(target=bleakLoopThread, daemon=True)
+    scan_thread = threading.Thread(target=bleakLoopThread, daemon=False)
+    # daemon is false so the thread has to be killed manualy before closing main thread
     scan_thread.start()
 
   while True:
@@ -59,23 +60,25 @@ def Update():
         else:
           g.isScanning = True
           g.scannCrono = 10
-    else: #onlineMode
-      if((not g.isScanning) and (g.scannCrono <= 0)):
-        g.scannCrono = g.scannFrequency
-        #g.scannCrono = round(random.uniform(g.scannFrequency, g.scannFrequency+5.0), 2)
-        scan_thread = threading.Thread(target=scanBT, daemon=True)
-        scan_thread.start()
+    # else: #onlineMode
+    #   if((not g.isScanning) and (g.scannCrono <= 0)):
+    #     g.scannCrono = g.scannFrequency
+    #     #g.scannCrono = round(random.uniform(g.scannFrequency, g.scannFrequency+5.0), 2)
+    #     scan_thread = threading.Thread(target=scanBT, daemon=False)
+    #     scan_thread.start()
     # End of handle Bluetooth device scanning
        
     # Handle Pygame events
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             # Quit the application if the X button is pressed
+            g.killBleak = True
             pygame.quit()
             quit()
         elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:
                 # Quit if the 'esc' key is pressed
+                g.killBleak = True
                 pygame.quit()
                 quit()
     # End of Handle Pygame events
