@@ -61,11 +61,17 @@ def setupBTAdapter():
 def bleakLoopThread():
     asyncio.run(bleakLoopAsync())
 
+    # asyncio.set_event_loop_policy(asyncio.ThreadedEventLoopPolicy())
+    # loop = asyncio.new_event_loop()
+    # asyncio.set_event_loop(loop)
+    # loop.run_until_complete(scann())
+    # loop.close()
+
     
 async def bleakLoopAsync():
     # global scanner
     g.killBleak = False
-    devices: Sequence[BLEDevice]
+    # devices: Sequence[BLEDevice]
     
     while not g.killBleak:
         
@@ -103,11 +109,12 @@ async def bleakLoopAsync():
 
 async def updateScanResoults(scanner):
 
-  await scanner.start()
-  await asyncio.sleep(5)
-  await scanner.stop()
-  await asyncio.sleep(1)
-  devices = scanner.discovered_devices
+  # await scanner.start()
+  # await asyncio.sleep(5)
+  # await scanner.stop()
+  # await asyncio.sleep(1)
+  # devices = scanner.discovered_devices
+  devices = await BleakScanner.disover(timeout=2)
 
   if len(devices) > 16:
     devices = devices[:16]
