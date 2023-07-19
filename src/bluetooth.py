@@ -53,7 +53,7 @@ def setupBTAdapter():
     global scanner
     print("Initializing Bluetooth...")
     
-    # scanner = BleakScanner()
+    scanner = BleakScanner()
     
     g.setupBleak = True
     
@@ -145,16 +145,17 @@ async def bleakLoopAsync():
 async def updateScanResoults(scanner):
   await asyncio.sleep(5)
   try:
-      # await scanner.start()
-      devices = await BleakScanner.discover(timeout=5.0)
-      # await scanner.stop()
-      # devices = scanner.discovered_devices
+      # devices = await BleakScanner.discover(timeout=5.0)
+      await scanner.start()
+      await asyncio.sleep(5)
+      await scanner.stop()
+      devices = scanner.discovered_devices
   except Exception as e:
       print(f"BLEAK 73: {e}")
 
   else:
       if len(devices) > 16:
-          devices = devices[:16]
+        devices = devices[:16]
       g.writeDevices = True
       g.foundDevicesBleak = list(devices)
       g.writeDevices = False
