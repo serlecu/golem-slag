@@ -77,10 +77,14 @@ async def bleakLoopAsync():
         await updateScanResoults(scanner)
       except Exception as e:
         print(e)
-        #await scanner.stop()
+        try:
+          await scanner.stop()
+        except Exception as e:
+          print(e)
         g.isScanning = False
         await asyncio.sleep(2)
       else:
+        g.isScanning = False
         # ~ if len(connectingClients) < 1:
             # ~ try:
                 # ~ await asyncio.sleep(5)
@@ -93,7 +97,7 @@ async def bleakLoopAsync():
                 # ~ # g.railSpeed = 50 + ( len(devices) * 5 )
                 # ~ g.railDelay = 1.0 - ( len(devices) * 0.07 )
         # ~ await asyncio.sleep(2)
-        g.isScanning = False
+        
         
         # 2. Pick & Filter 
         print("BLEAK: Filtering Found Devices...")
