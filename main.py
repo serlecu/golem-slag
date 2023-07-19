@@ -90,8 +90,7 @@ def Update():
       if(g.scannCrono > 0):
         g.scannCrono -= (time.time() - g.lastLoopTime)
 
-    g.restartUSBCrono -= (time.time() - g.lastLoopTime)
-    g.lastLoopTime = time.time()
+      g.lastLoopTime = time.time()
     # End of Update Timers
 
   # End of Update() ========================================

@@ -53,7 +53,7 @@ def setupBTAdapter():
     global scanner
     print("Initializing Bluetooth...")
     
-    scanner = BleakScanner()
+    scanner = BleakScanner(scanning_mode='passive')
     
     g.setupBleak = True
     
@@ -71,20 +71,12 @@ async def bleakLoopAsync():
         
       print("BLEAK: start scanning")
       g.isScanning = True
-      # async with BleakScanner() as scanner:
       # 1. Scann
       try:
         await updateScanResoults(scanner)
       except Exception as e:
         print(e)
-        try:
-          await scanner.stop()
-        except Exception as e:
-          print(e)
-        g.isScanning = False
-        await asyncio.sleep(2)
-      else:
-        g.isScanning = False
+      # else:
         # ~ if len(connectingClients) < 1:
             # ~ try:
                 # ~ await asyncio.sleep(5)
@@ -99,77 +91,35 @@ async def bleakLoopAsync():
         # ~ await asyncio.sleep(2)
         
         
-        # 2. Pick & Filter 
-        print("BLEAK: Filtering Found Devices...")
-        for device in g.foundDevicesBleak :
-            filterDevice(device, TARGET_SERVICE)
-        print("BLEAK: ...end filtering Found Devices.")
-                
-        # 3. Connect
-        # print("BLEAK: start connecting")
-        # for d in matchedDevices:
-        #     if device in connectedDevices:
-        #         continue
-        #     else:
-        #         async with BleakClient(d) as client:
-        #             print(f"BLEAK: Start Client {client.address}")
-        #             print(f"{client.address} is connected {client.is_connected}")
-        #             connectedDevices.append(d)
-                    
-        #             # 4. Subscribe to notify
-        #             try:
-        #                 await client.start_notify(
-        #                                 char_specifier=CHARACTERISTIC_UUID, 
-        #                                 callback=onCharacNotified 
-        #                                 )
-        #             except Exception as e:
-        #                 print(f"BLEAK ERROR: on notify. {e}")
-        #                 await asyncio.sleep(3)
-        #             else:
-        #                 print(f"BLEAK: success subribing to {CHARACTERISTIC_UUID} of {client.address}")
-        #                 keepConnected = True
-        #                 while keepConnected:
-        #                     await asyncio.sleep(10)
-        #                     await updateScanResoults(scanner)
-                            
-        #             finally:
-        #                 try:
-        #                     await client.unpair()
-        #                 except Exception as e:
-        #                     print(f"BLEAK ERROR: {e}")
-        #                 finally:
-        #                     connectedDevices.remove(d)
-        #                     print(f"BLEAK: End Client {client.address}")   
-        #await scanner.stop()
-      # g.isScanning = False      
+        # # 2. Pick & Filter 
+        # print("BLEAK: Filtering Found Devices...")
+        # for device in g.foundDevicesBleak :
+        #     filterDevice(device, TARGET_SERVICE)
+        # print("BLEAK: ...end filtering Found Devices.")
+
+      g.isScanning = False      
       await asyncio.sleep(10)
 
 
 async def updateScanResoults(scanner):
-  await asyncio.sleep(5)
-  try:
-      # devices = await BleakScanner.discover(timeout=5.0)
-      await scanner.start()
-      await asyncio.sleep(5)
-      await scanner.stop()
-      # devices = scanner.discovered_devices
-  except Exception as e:
-      print(f"BLEAK 73: {e}")
 
-  else:
-      if len(devices) > 16:
-        devices = devices[:16]
-      g.writeDevices = True
-      g.foundDevicesBleak = list(devices)
-      g.writeDevices = False
-      # ~ g.railSpeed = 50 + ( len(devices) * 5 )
-      # ~ g.railDelay = 1.0 - ( len(devices) * 0.07 )
-      # if len(devices) > 0:
-      #     g.railDelay = 1.0 / len(devices)
-      # else:
-      #     g.railDelay = 1.0
-      
-  # await asyncio.sleep(2)
+  await scanner.start()
+  await asyncio.sleep(5)
+  await scanner.stop()
+  await asyncio.sleep(1)
+  devices = scanner.discovered_devices
+
+  if len(devices) > 16:
+    devices = devices[:16]
+  g.writeDevices = True
+  g.foundDevicesBleak = list(devices)
+  g.writeDevices = False
+  # ~ g.railSpeed = 50 + ( len(devices) * 5 )
+  # ~ g.railDelay = 1.0 - ( len(devices) * 0.07 )
+  # if len(devices) > 0:
+  #     g.railDelay = 1.0 / len(devices)
+  # else:
+  #     g.railDelay = 1.0
   print("BLEAK: end scanning")
   
                 
