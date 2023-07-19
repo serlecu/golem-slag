@@ -91,6 +91,8 @@ def Update():
         g.scannCrono -= (time.time() - g.lastLoopTime)
 
       g.lastLoopTime = time.time()
+
+      
     # End of Update Timers
 
   # End of Update() ========================================
