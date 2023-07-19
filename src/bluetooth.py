@@ -138,7 +138,7 @@ async def bleakLoopAsync():
               #                     connectedDevices.remove(d)
               #                     print(f"BLEAK: End Client {client.address}")   
               #await scanner.stop()
-        g.isScanning = False      
+        # g.isScanning = False      
         await asyncio.sleep(10)
         
 async def updateScanResoults(scanner):
@@ -162,6 +162,7 @@ async def updateScanResoults(scanner):
             g.writeDevices = True
             g.foundDevicesBleak = list(devices)
             g.writeDevices = False
+            g.isScanning = False
             # ~ g.railSpeed = 50 + ( len(devices) * 5 )
             # ~ g.railDelay = 1.0 - ( len(devices) * 0.07 )
             # if len(devices) > 0:
