@@ -42,14 +42,17 @@ def Setup():
 def Update():
   import src.globals as g
   
+  # Start Bluetooth device scanning thread (online mode)
   if not g.offlineMode:
     scan_thread = threading.Thread(target=bleakLoopThread, daemon=False)
     # daemon is false so the thread has to be killed manualy before closing main thread
     scan_thread.start()
+  # End of Start Bluetooth device scanning thread (online mode)
 
+  # Update Loop
   while True:
     
-    #Handle Bluetooth device scanning
+    #Handle Bluetooth device scanning (offline mode)
     if g.offlineMode:
        #turn state of g.isScanning each 10 seconds
       if g.scannCrono <= 0:
@@ -60,13 +63,7 @@ def Update():
         else:
           g.isScanning = True
           g.scannCrono = 10
-    # else: #onlineMode
-    #   if((not g.isScanning) and (g.scannCrono <= 0)):
-    #     g.scannCrono = g.scannFrequency
-    #     #g.scannCrono = round(random.uniform(g.scannFrequency, g.scannFrequency+5.0), 2)
-    #     scan_thread = threading.Thread(target=scanBT, daemon=False)
-    #     scan_thread.start()
-    # End of handle Bluetooth device scanning
+    # End of Bluetooth device scanning (offline mode)
        
     # Handle Pygame events
     for event in pygame.event.get():
@@ -85,26 +82,17 @@ def Update():
 
     # Draw graphics on the screen
     DrawLoop()
-
-    # Update the Pygame display
     pygame.display.update()
+    # end of Draw graphics on the screen
 
     # Update Timers
-    g.restartUSBCrono -= (time.time() - g.lastLoopTime)
-
     if g.offlineMode:
       if(g.scannCrono > 0):
         g.scannCrono -= (time.time() - g.lastLoopTime)
-      g.lastLoopTime = time.time()
 
-    else:
-      if(g.scannCrono > 0):
-        if (g.isScanning == False):
-          g.scannCrono -= (time.time() - g.lastLoopTime)
-        # if (g.isConnecting == False):
-        #   g.connectCrono -= (time.time() - g.lastLoopTime)
-
-      g.lastLoopTime = time.time()
+    g.restartUSBCrono -= (time.time() - g.lastLoopTime)
+    g.lastLoopTime = time.time()
+    # End of Update Timers
 
   # End of Update() ========================================
     
