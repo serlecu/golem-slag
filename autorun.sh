@@ -17,7 +17,7 @@ sudo chmod o+rw /var/run/sdp
 sudo hciconfig hci0 piscan
 
 echo "run python"
-python ~/Desktop/golem-slag/main.py >> "$filename" 2>&1
+python ~/Desktop/golem-slag/main.py
 
 # == Do perform manualy only once ==
 # add user to bluetooth group
