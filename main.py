@@ -15,33 +15,12 @@ def Setup():
   import src.globals as g
 
   g.initGlobals()
-  
-  # Init Rail
-  # try:
-  #   initRail()
-  # except Exception as e:
-  #   print(e)
-  # else:
-  #   g.i2cConnected = True
-     
-  # rail_thread = threading.Thread(target=railControl, daemon=True)
-  # rail_thread.start()
-  
 
   # Initialize Pygame
   print("PYGAME INIT")
   os.environ["DISPLAY"] = ":0"
   pygame.init()
-  
-  # get os
-  platform_os = os.uname()[0]
-  print("OS: " + platform_os)
-
-  if platform_os == "Darwin":
-    g.screen = pygame.display.set_mode((480,480))
-  else:
-    g.screen = pygame.display.set_mode((480,480),pygame.FULLSCREEN)
-    # ~ g.screen = pygame.display.set_mode((480,480))
+  g.screen = pygame.display.set_mode((480,480),pygame.FULLSCREEN)
   pygame.display.set_caption("Golem: Display Node")
   pygame.mouse.set_visible(False)
   g.setupPygame = True
@@ -101,33 +80,11 @@ def Update():
                 quit()
     # End of Handle Pygame events
 
-    # Handle Bluetooth connections
-    # ~ if (g.isConnecting == False) and (g.connectCrono <= 0) and (g.isScanning == False):
-      # ~ connect_thread = threading.Thread(target=handleBTConnections(), daemon=True)
-      # ~ connect_thread.start()
-      # ~ asyncio.run(handleBTConnections())
-      # ~ g.connectingCrono = round(random.uniform(g.connectFreq, g.connectFreq+5.0), 2)
-    # End of Handle Bluetooth connections
-
-    # Handle Bluetooth notifications
-    if not g.offlineMode:
-      if not g.serverLessMode:
-        handleBTData()
-
     # Draw graphics on the screen
     DrawLoop()
-    #DrawDebugLayer()
 
     # Update the Pygame display
     pygame.display.update()
-
-    # Restart USB power if time to do so
-    # if g.restartUSBCrono <= 0:
-    #   print("Restarting USB")
-    #   #os.system("sudo systemctl restart usbmount")
-    #   os.system("/sys/devices/platform/soc/20980000.usb/buspower")
-    #   g.restartUSBCrono = g.restartUSBFreq
-
 
     # Update Timers
     g.restartUSBCrono -= (time.time() - g.lastLoopTime)
