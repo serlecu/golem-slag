@@ -114,19 +114,23 @@ async def updateScanResoults(scanner):
   # await scanner.stop()
   # await asyncio.sleep(1)
   # devices = scanner.discovered_devices
-  devices = await BleakScanner.disover(timeout=2)
-
-  if len(devices) > 16:
-    devices = devices[:16]
-  g.writeDevices = True
-  g.foundDevicesBleak = list(devices)
-  g.writeDevices = False
-  # ~ g.railSpeed = 50 + ( len(devices) * 5 )
-  # ~ g.railDelay = 1.0 - ( len(devices) * 0.07 )
-  # if len(devices) > 0:
-  #     g.railDelay = 1.0 / len(devices)
-  # else:
-  #     g.railDelay = 1.0
+  devices : Sequence[BLEDevice]
+  try:
+    devices = await BleakScanner.disover(timeout=5)
+  except Exception as e:
+    print(f"BLEAK 73: {e}")
+  else:
+    if len(devices) > 16:
+      devices = devices[:16]
+    g.writeDevices = True
+    g.foundDevicesBleak = list(devices)
+    g.writeDevices = False
+    # ~ g.railSpeed = 50 + ( len(devices) * 5 )
+    # ~ g.railDelay = 1.0 - ( len(devices) * 0.07 )
+    # if len(devices) > 0:
+    #     g.railDelay = 1.0 / len(devices)
+    # else:
+    #     g.railDelay = 1.0
   print("BLEAK: end scanning")
   
                 
