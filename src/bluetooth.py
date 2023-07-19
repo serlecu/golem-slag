@@ -116,7 +116,7 @@ async def updateScanResoults(scanner):
   # devices = scanner.discovered_devices
   devices : Sequence[BLEDevice]
   try:
-    devices = await BleakScanner.disover(timeout=5)
+    devices = await BleakScanner.discover(timeout=5)
   except Exception as e:
     print(f"BLEAK 73: {e}")
   else:
