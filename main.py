@@ -27,14 +27,14 @@ def Setup():
   g.setupPygame = True
 
   # Initialize BLEAK Client
-  if not g.offlineMode:
-    setupBTAdapter()
+  # if not g.offlineMode:
+  #   setupBTAdapter()
   
   # Initialize BLESS Server
-  if not g.offlineMode:
-    if not g.serverLessMode:
-      loop = asyncio.get_event_loop()
-      loop.run_until_complete(initServerAsync(loop))
+  # if not g.offlineMode:
+  #   if not g.serverLessMode:
+  #     loop = asyncio.get_event_loop()
+  #     loop.run_until_complete(initServerAsync(loop))
   
   
 # End of Setup() ========================================
@@ -54,16 +54,16 @@ def Update():
   while True:
     
     #Handle Bluetooth device scanning (offline mode)
-    if g.offlineMode:
-       #turn state of g.isScanning each 10 seconds
-      if g.scannCrono <= 0:
-        if g.isScanning:
-          g.shuffleOfflineList()
-          g.isScanning = False
-          g.scannCrono = 5
-        else:
-          g.isScanning = True
-          g.scannCrono = 10
+    # if g.offlineMode:
+    #    #turn state of g.isScanning each 10 seconds
+    #   if g.scannCrono <= 0:
+    #     if g.isScanning:
+    #       g.shuffleOfflineList()
+    #       g.isScanning = False
+    #       g.scannCrono = 5
+    #     else:
+    #       g.isScanning = True
+    #       g.scannCrono = 10
     # End of Bluetooth device scanning (offline mode)
        
     # Handle Pygame events
