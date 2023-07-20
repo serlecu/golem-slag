@@ -5,10 +5,10 @@ import pygame
 import random
 
 from src.bt_client import *
-# from src.bt_server import *
+from src.bt_server import *
 from src.graphics import *
 from src.debug_display import *
-# from src.seria_send import *
+# from src.serial_send import *
 
 # import simplepyble as ble
 
@@ -44,10 +44,10 @@ def Update():
   import src.globals as g
   
   # Start Bluetooth device scanning thread (online mode)
-  if not g.offlineMode:
-    scan_thread = threading.Thread(target=bleakLoopThread, daemon=False)
-    # daemon is false so the thread has to be killed manualy before closing main thread
-    scan_thread.start()
+  # if not g.offlineMode:
+  #   scan_thread = threading.Thread(target=bleakLoopThread, daemon=False)
+  #   # daemon is false so the thread has to be killed manualy before closing main thread
+  #   scan_thread.start()
   # End of Start Bluetooth device scanning thread (online mode)
 
   # Update Loop
@@ -71,13 +71,13 @@ def Update():
         if event.type == pygame.QUIT:
             # Quit the application if the X button is pressed
             pygame.quit()
-            # g.killBleak = True
+            g.killBleak = True
             quit()
         elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:
                 # Quit if the 'esc' key is pressed
                 pygame.quit()
-                # g.killBleak = True
+                g.killBleak = True
                 quit()
     # End of Handle Pygame events
 
