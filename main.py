@@ -2,15 +2,12 @@ import time
 import os
 import threading
 import pygame
-import random
 
 from src.bt_client import *
 from src.bt_server import *
 from src.graphics import *
 from src.debug_display import *
 # from src.serial_send import *
-
-# import simplepyble as ble
 
 def Setup():
   import src.globals as g
