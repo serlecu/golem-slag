@@ -31,10 +31,10 @@ def Setup():
     setupBTAdapter()
   
   # Initialize BLESS Server
-  # if not g.offlineMode:
-  #   if not g.serverLessMode:
-  #     loop = asyncio.get_event_loop()
-  #     loop.run_until_complete(initServerAsync(loop))
+  if not g.offlineMode:
+    if not g.serverLessMode:
+      loop = asyncio.get_event_loop()
+      loop.run_until_complete(initServerAsync(loop))
   
   
 # End of Setup() ========================================
@@ -44,10 +44,10 @@ def Update():
   import src.globals as g
   
   # Start Bluetooth device scanning thread (online mode)
-  # if not g.offlineMode:
-  #   scan_thread = threading.Thread(target=bleakLoopThread, daemon=True)
-  #   # daemon is false so the thread has to be killed manualy before closing main thread
-  #   scan_thread.start()
+  if not g.offlineMode:
+    scan_thread = threading.Thread(target=bleakLoopThread, daemon=False)
+    # daemon is false so the thread has to be killed manualy before closing main thread
+    scan_thread.start()
   # End of Start Bluetooth device scanning thread (online mode)
 
   # Update Loop
@@ -71,13 +71,13 @@ def Update():
         if event.type == pygame.QUIT:
             # Quit the application if the X button is pressed
             pygame.quit()
-            g.killBleak = True
+            # g.killBleak = True
             quit()
         elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:
                 # Quit if the 'esc' key is pressed
                 pygame.quit()
-                g.killBleak = True
+                # g.killBleak = True
                 quit()
     # End of Handle Pygame events
 
