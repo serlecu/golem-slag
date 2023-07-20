@@ -44,10 +44,10 @@ def Update():
   import src.globals as g
   
   # Start Bluetooth device scanning thread (online mode)
-  if not g.offlineMode:
-    scan_thread = threading.Thread(target=bleakLoopThread, daemon=True)
-    # daemon is false so the thread has to be killed manualy before closing main thread
-    scan_thread.start()
+  # if not g.offlineMode:
+  #   scan_thread = threading.Thread(target=bleakLoopThread, daemon=True)
+  #   # daemon is false so the thread has to be killed manualy before closing main thread
+  #   scan_thread.start()
   # End of Start Bluetooth device scanning thread (online mode)
 
   # Update Loop
