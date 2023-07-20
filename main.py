@@ -8,7 +8,7 @@ from src.bt_client import *
 # from src.bt_server import *
 from src.graphics import *
 from src.debug_display import *
-# from src.rail import *
+# from src.seria_send import *
 
 # import simplepyble as ble
 
@@ -45,7 +45,7 @@ def Update():
   
   # Start Bluetooth device scanning thread (online mode)
   if not g.offlineMode:
-    scan_thread = threading.Thread(target=bleakLoopThread, daemon=False)
+    scan_thread = threading.Thread(target=bleakLoopThread, daemon=True)
     # daemon is false so the thread has to be killed manualy before closing main thread
     scan_thread.start()
   # End of Start Bluetooth device scanning thread (online mode)
@@ -70,14 +70,14 @@ def Update():
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             # Quit the application if the X button is pressed
-            g.killBleak = True
             pygame.quit()
+            g.killBleak = True
             quit()
         elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:
                 # Quit if the 'esc' key is pressed
-                g.killBleak = True
                 pygame.quit()
+                g.killBleak = True
                 quit()
     # End of Handle Pygame events
 
