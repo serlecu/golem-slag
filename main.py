@@ -4,7 +4,8 @@ import threading
 import pygame
 import random
 
-from src.bluetooth import *
+from src.bt_client import *
+# from src.bt_server import *
 from src.graphics import *
 from src.debug_display import *
 # from src.rail import *
@@ -30,10 +31,10 @@ def Setup():
     setupBTAdapter()
   
   # Initialize BLESS Server
-  if not g.offlineMode:
-    if not g.serverLessMode:
-      loop = asyncio.get_event_loop()
-      loop.run_until_complete(initServerAsync(loop))
+  # if not g.offlineMode:
+  #   if not g.serverLessMode:
+  #     loop = asyncio.get_event_loop()
+  #     loop.run_until_complete(initServerAsync(loop))
   
   
 # End of Setup() ========================================
