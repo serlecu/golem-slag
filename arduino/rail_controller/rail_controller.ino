@@ -40,24 +40,24 @@ void loop() {
   // Temporizador
   lastLoopTime = millis();
   if (speedTimer > ((random(4)+4) * 60000)) {
-    speedDelay = random(156) + 45;
+    // speedDelay = random(156) + 45;
     speedTimer = 0;
   }
 
 
-  // if (Serial.available() > 0) {
-  //   // look for the next valid integer in the incoming serial stream:
-  //   int msgValue = Serial.parseInt();
-  //   digitalWrite(13, HIGH);
-  //   // Read Serial for value 
-  //   if (Serial.read() == '\n') {
-  //     // constrain the values to 0 - 255 and invert
-  //     speedDelay = constrain(msgValue, 40, 1000);
-  //   }
-  // }
-
-  // Serial.print("EndStopA: ");
-  // Serial.println(digitalRead(2));
+  if (Serial.available() > 0) {
+    // look for the next valid integer in the incoming serial stream:
+    int msgValue = Serial.parseInt();
+    // Read Serial for value 
+    if (Serial.read() == '\n') {
+      // constrain the values to 0 - 255 and invert
+      speedDelay = constrain(msgValue, 40, 1000);
+      digitalWrite(13, HIGH);
+    }
+  }
+  else {
+    digitalWrite(13, LOW);
+  }
 
   //speedDelay = map(analogRead(A0), 0, 1024, 2, 1000);
   // Serial.print("Speed: ");
@@ -184,18 +184,18 @@ int n = 0;
 
 void requestEvents()
 {
-  Serial.println(F("---> recieved request"));
-  Serial.print(F("sending value : "));
-  Serial.println(n);
+  // Serial.println(F("---> recieved request"));
+  // Serial.print(F("sending value : "));
+  // Serial.println(n);
   Wire.write(n);
 }
 
 void receiveEvents(int numBytes)
 {  
-  Serial.println(F("---> recieved events"));
+  // Serial.println(F("---> recieved events"));
   n = Wire.read();
-  Serial.print(numBytes);
-  Serial.println(F("bytes recieved"));
-  Serial.print(F("recieved value : "));
-  Serial.println(n);
+  // Serial.print(numBytes);
+  // Serial.println(F("bytes recieved"));
+  // Serial.print(F("recieved value : "));
+  // Serial.println(n);
 }
