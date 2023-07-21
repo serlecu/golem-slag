@@ -94,7 +94,7 @@ def initGlobals():
     offlineListLen = random.randint(10, 16)
     print(f"Offline Mode: {offlineListLen} devices")
   
-  print(f"Initialize Golem Node #{nodeID}")
+  # print(f"Initialize Golem Node #{nodeID}")
 
 
 def shuffleOfflineList():

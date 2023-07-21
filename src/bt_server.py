@@ -33,14 +33,11 @@ async def initServerAsync(_loop):
     global trigger, server, serverName, loop
     
     loop = _loop
+    trigger.clear()
+    
     print("BLESS: Setting up BLE Server...")
-    
-    
-    
-    # ~ trigger.clear()
-    
     serverName = "SLAG_" + g.nodeID
-    print(serverName)
+    print(f"BLESS: Server name: {serverName}")
     
     server = BlessServer(name=serverName, name_overwrite=True, loop=loop)
     
@@ -72,16 +69,23 @@ async def initServerAsync(_loop):
     # End of --- without gatt ---
     
     # --- With gatt ---
-    # gatt:Dict = {
-    #     SERVICE_UUID: {
-    #         CHARACTERISTIC_UUID:{
-    #             "Properties": GATTCharacteristicProperties.notify,
-    #             "Permissions": GATTAttributePermissions.readable,
-    #             "Value": str(g.nodeID+"00").encode()
-    #         },
-    #     }
-    # }
-    # ~ await server.add_gatt(gatt)
+    gatt:Dict = {
+        SERVICE_UUID: {
+            CHARACTERISTIC_UUID:{
+                "Properties": GATTCharacteristicProperties.notify,
+                "Permissions": GATTAttributePermissions.readable,
+                "Value": str(g.nodeID+"00").encode()
+            },
+        }
+    }
+    try:
+      await server.add_gatt(gatt)
+    except Exception as e:
+        print(f"BLESS: Error adding gatt: {e}")
+    else:
+        print(f"BLESS: gatt added {gatt}")
+        notifyChar = server.get_characteristic(CHARACTERISTIC_UUID)
+        print(notifyChar)
     # End of --- With gatt ---
     # End of add Services and Characteristics
 
@@ -96,7 +100,7 @@ async def initServerAsync(_loop):
         g.runningBLEserver = True
         print("BLESS: Advertising.")
         
-        bless_thread = threading.Thread(target=runBlessListener(), daemon=True)
+        bless_thread = threading.Thread(target=runBlessListener(), daemon=False)
         bless_thread.start()
     # End of start BLE server
     
@@ -119,10 +123,11 @@ def runBlessListener():
             print("BLESS: back to listen.")
         except Exception as e:
             print(f"BLESS listener Error: {e}.")
+            g.runningBLEserver = False
         
     print("BLESS: end server")
     server.stop()
-    loop.close()
+    # loop.close()
     
 
 # BLESS - server
