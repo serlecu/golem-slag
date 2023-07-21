@@ -1,9 +1,6 @@
 import time
-import os
 import threading
 import pygame
-
-# import customtkinter as tk
 
 from src.bt_client import *
 from src.bt_server import *
@@ -18,14 +15,6 @@ def Setup():
 
   # Initialize Pygame
   setupPygame()
-  # print("PYGAME INIT")
-  # os.environ["DISPLAY"] = ":0"
-  # pygame.init()
-
-  # g.screen = pygame.display.set_mode((480,480),pygame.FULLSCREEN)
-  # pygame.display.set_caption("Golem: Display Node")
-  # pygame.mouse.set_visible(False)
-  # g.setupPygame = True
 
   # Initialize BLEAK Client
   if not g.offlineMode:
@@ -84,7 +73,7 @@ def Update():
 
     # Draw graphics on the screen
     DrawLoop()
-    DisplayUpdate()
+    UpdateDisplay()
     # end of Draw graphics on the screen
 
     # Update Timers
@@ -96,7 +85,7 @@ def Update():
     # End of Update Timers
 
     # Debug Memory
-    print ("MEM", end="\r")
+    # print ("MEM", end="\r")
     # End of Debug Memory
 
   # End of Update() ========================================
@@ -104,5 +93,7 @@ def Update():
 
 # Start the event loop
 if __name__ == "__main__":
+  # Print starting timecode
+  print(f"Golem Slag started at {time.strftime('%H:%M:%S', time.localtime())}")
   Setup()
   Update()
