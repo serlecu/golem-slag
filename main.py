@@ -3,6 +3,8 @@ import os
 import threading
 import pygame
 
+# import customtkinter as tk
+
 from src.bt_client import *
 from src.bt_server import *
 from src.graphics import *
@@ -18,11 +20,19 @@ def Setup():
   print("PYGAME INIT")
   os.environ["DISPLAY"] = ":0"
   pygame.init()
-  # g.screen = pygame.display.set_mode((480,480),pygame.FULLSCREEN)
-  g.screen = pygame.display.set_mode((480,480),pygame.RESIZABLE)
+  g.screen = pygame.display.set_mode((480,480),pygame.FULLSCREEN)
   pygame.display.set_caption("Golem: Display Node")
   pygame.mouse.set_visible(False)
   g.setupPygame = True
+
+  # Init Tinker
+  # tk.set_appearance_mode("dark")  # Modes: "System" (standard), "Dark", "Light"
+  # tk.set_default_color_theme("blue")  # Themes: "blue" (standard), "green", "dark-blue"
+  # app = tk.CTk()
+  # app.geometry("400x780")
+  # app.configure(fullscreen=True)
+  # app.title("CustomTkinter simple_example.py")
+  # app.mainloop()
 
   # Initialize BLEAK Client
   # if not g.offlineMode:
@@ -69,13 +79,13 @@ def Update():
         if event.type == pygame.QUIT:
             # Quit the application if the X button is pressed
             pygame.quit()
-            g.killBleak = True
+            # g.killBleak = True
             quit()
         elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:
                 # Quit if the 'esc' key is pressed
                 pygame.quit()
-                g.killBleak = True
+                # g.killBleak = True
                 quit()
     # End of Handle Pygame events
 
