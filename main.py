@@ -27,8 +27,8 @@ def Setup():
       loop.run_until_complete(initServerAsync(loop))
 
   # Initialize Serial
-  railSerialThread = threading.Thread(target=railSerialThread, daemon=False)
-  railSerialThread.start()
+  serialThread = threading.Thread(target=railSerialThread, daemon=False)
+  serialThread.start()
 
   
   
