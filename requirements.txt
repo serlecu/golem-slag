@@ -2,12 +2,12 @@ pygame==2.3.0
 pyobjc-core==9.0.1; sys_platform == 'darwin'
 pyobjc-framework-Cocoa==9.0.1; sys_platform == 'darwin'
 pyobjc-framework-libdispatch==9.0.1; sys_platform == 'darwin'
-#simplepyble==0.6.1
-#pybluez2==0.42
 bless==0.2.5
 bleak==0.19.5
 dbus-fast==1.83
 dbus-next==0.2.2
 dbus-python==1.2.16
 grove.py==0.6
-custom_tinker==5.2.0
+#simplepyble==0.6.1
+#pybluez2==0.42
+# memory-profiler==0.61.0
