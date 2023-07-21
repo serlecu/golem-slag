@@ -68,7 +68,7 @@ async def bleakLoopAsync():
 
           # 3. Update rail values
           if len(devices) < 25:
-              g.railDelay = 1500 / (len(devices)+1)
+              g.railDelay = int(1500 / (len(devices)+1))
           else:
               g.railDelay = 1500
             

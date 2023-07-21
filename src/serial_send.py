@@ -12,23 +12,36 @@ def railSerialThread():
     portFound:bool = False
     arduino:serial.Serial = None
 
-    while not portFound:
+    while not g.killRail:
       port = findSerial()
       if port is not None:
-        arduino = openSerial(port)
-        portFound = True
-      time.sleep(1)
-
-    while not g.killRailSerial:
-        if not g.offlineMode:
-            sendValueSerial(arduino, g.railDelay ) #send millis
+        try:
+          arduino = openSerial(port)
+        except Exception as e:
+          print(f"Serial ERROR: {e}")
+          
         else:
-            randomVal = random.randint(500, 1000)
-            sendValueSerial(arduino, randomVal)
-        time.sleep(2)
+          g.serialState = True
 
-    if arduino is not None:
-      arduino.close()
+          while g.serialState:
+              if not g.offlineMode:
+                  try:
+                    sendValueSerial(arduino, g.railDelay ) #send millis
+                  except Exception as e:
+                    print(f"Serial ERROR: {e}")
+                    g.serialState = False
+                    try:
+                      arduino.__del__()
+                    except Exception as e:
+                      print(f"Serial ERROR: {e}")
+                  finally:
+                      time.sleep(2)
+              else:
+                  randomVal = random.randint(500, 1000)
+                  sendValueSerial(arduino, randomVal)
+        finally:
+            time.sleep(2)
+
 
 def findSerial():
     global railSerial

@@ -15,16 +15,9 @@ screen: pygame.Surface
 
 
 # Rail
-i2cConnected = False
 killRail: bool = False
-lastEndSwitch: bool = False
-railDirection: bool = True
-railSpeed: int = 60
-railDelay: float = 1.0
-endSwitchCounter = 0
-syncState = False
-restartUSBFreq = 10.0
-restartUSBCrono: float = 10.0
+serialState = False
+railDelay: int = 1500
 
 
 # Bluetooth BLEAK Client
