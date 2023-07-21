@@ -21,10 +21,10 @@ def Setup():
     setupBTAdapter()
   
   # Initialize BLESS Server
-  # if not g.offlineMode:
-  #   if not g.serverLessMode:
-  #     loop = asyncio.get_event_loop()
-  #     loop.run_until_complete(initServerAsync(loop))
+  if not g.offlineMode:
+    if not g.serverLessMode:
+      loop = asyncio.get_event_loop()
+      loop.run_until_complete(initServerAsync(loop))
   
   
 # End of Setup() ========================================
@@ -61,13 +61,15 @@ def Update():
         if event.type == pygame.QUIT:
             # Quit the application if the X button is pressed
             pygame.quit()
-            # g.killBleak = True
+            g.killBleak = True
+            g.runningBLEserver = False
             quit()
         elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:
                 # Quit if the 'esc' key is pressed
                 pygame.quit()
-                # g.killBleak = True
+                g.killBleak = True
+                g.runningBLEserver = False
                 quit()
     # End of Handle Pygame events
 

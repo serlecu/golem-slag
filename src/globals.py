@@ -45,7 +45,7 @@ failedNotifications: list
 
 
 # Bluetooth BLESS Server
-serverLessMode: bool = True
+serverLessMode: bool = False
 setupBless: bool = False
 runningBLEserver: bool = False
 
