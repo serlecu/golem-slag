@@ -63,4 +63,4 @@ def openSerial(port:str):
 
 
 def sendValueSerial(arduino:serial.Serial, value: int):
-    arduino.write(str(value).encode('utf-8'))
+    arduino.write(f"{value}\n".encode())
