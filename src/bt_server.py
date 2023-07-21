@@ -100,8 +100,8 @@ async def initServerAsync(_loop):
         g.runningBLEserver = True
         print("BLESS: Advertising.")
         
-        bless_thread = threading.Thread(target=runBlessListener(), daemon=False)
-        bless_thread.start()
+        # bless_thread = threading.Thread(target=runBlessListener(), daemon=False)
+        # bless_thread.start()
     # End of start BLE server
     
     if await server.is_advertising():
