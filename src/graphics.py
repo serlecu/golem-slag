@@ -1,10 +1,24 @@
 import pygame
 from pygame import gfxdraw
 import math
-import time
+import os
 import random
 
 import src.globals as g # global variables
+
+clock = pygame.time.Clock()
+deltaTime = 0.0
+radarAngle = 0.0
+
+def setupPygame():
+    print("PYGAME INIT")
+    os.environ["DISPLAY"] = ":0"
+    pygame.init()
+
+    g.screen = pygame.display.set_mode((480,480),pygame.FULLSCREEN)
+    pygame.display.set_caption("Golem: Display Node")
+    pygame.mouse.set_visible(False)
+    g.setupPygame = True
 
 def draw_background(screen, color):
     screen.fill(color)
@@ -71,8 +85,12 @@ def debugScannedDevicesOffline(deviceList:list, screen):
             break
 
 def DrawLoop():
+    global deltaTime
+    global radarAngle
+
+    radarAngle += deltaTime % 360
     draw_background(g.screen, (0, 0, 0))
-    test_ellipse(g.screen, (200, 200, 200, 100), 200, time.time())
+    test_ellipse(g.screen, (200, 200, 200, 100), 200, radarAngle)
 
     test_text(g.screen, (f"IsScanning: {g.isScanning}"), (g.screen.get_width()/2, 40), (255, 255, 255))
 
@@ -84,3 +102,10 @@ def DrawLoop():
             test_text(g.screen, "No devices found", (g.screen.get_width()/2, 100), (255, 255, 255))
     else:
         debugScannedDevicesOffline(g.offlineMacList, g.screen)
+
+
+def DisplayUpdate():
+    global deltaTime
+    
+    pygame.display.update()
+    deltaTime = clock.tick(60) / 1000.0

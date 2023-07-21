@@ -17,26 +17,19 @@ def Setup():
   g.initGlobals()
 
   # Initialize Pygame
-  print("PYGAME INIT")
-  os.environ["DISPLAY"] = ":0"
-  pygame.init()
-  g.screen = pygame.display.set_mode((480,480),pygame.FULLSCREEN)
-  pygame.display.set_caption("Golem: Display Node")
-  pygame.mouse.set_visible(False)
-  g.setupPygame = True
+  setupPygame()
+  # print("PYGAME INIT")
+  # os.environ["DISPLAY"] = ":0"
+  # pygame.init()
 
-  # Init Tinker
-  # tk.set_appearance_mode("dark")  # Modes: "System" (standard), "Dark", "Light"
-  # tk.set_default_color_theme("blue")  # Themes: "blue" (standard), "green", "dark-blue"
-  # app = tk.CTk()
-  # app.geometry("400x780")
-  # app.configure(fullscreen=True)
-  # app.title("CustomTkinter simple_example.py")
-  # app.mainloop()
+  # g.screen = pygame.display.set_mode((480,480),pygame.FULLSCREEN)
+  # pygame.display.set_caption("Golem: Display Node")
+  # pygame.mouse.set_visible(False)
+  # g.setupPygame = True
 
   # Initialize BLEAK Client
-  # if not g.offlineMode:
-  #   setupBTAdapter()
+  if not g.offlineMode:
+    setupBTAdapter()
   
   # Initialize BLESS Server
   # if not g.offlineMode:
@@ -52,26 +45,26 @@ def Update():
   import src.globals as g
   
   # Start Bluetooth device scanning thread (online mode)
-  # if not g.offlineMode:
-  #   scan_thread = threading.Thread(target=bleakLoopThread, daemon=False)
-  #   # daemon is false so the thread has to be killed manualy before closing main thread
-  #   scan_thread.start()
+  if not g.offlineMode:
+    scan_thread = threading.Thread(target=bleakLoopThread, daemon=False)
+    # daemon is false so the thread has to be killed manualy before closing main thread
+    scan_thread.start()
   # End of Start Bluetooth device scanning thread (online mode)
 
   # Update Loop
   while True:
     
     #Handle Bluetooth device scanning (offline mode)
-    # if g.offlineMode:
-    #    #turn state of g.isScanning each 10 seconds
-    #   if g.scannCrono <= 0:
-    #     if g.isScanning:
-    #       g.shuffleOfflineList()
-    #       g.isScanning = False
-    #       g.scannCrono = 5
-    #     else:
-    #       g.isScanning = True
-    #       g.scannCrono = 10
+    if g.offlineMode:
+       #turn state of g.isScanning each 10 seconds
+      if g.scannCrono <= 0:
+        if g.isScanning:
+          g.shuffleOfflineList()
+          g.isScanning = False
+          g.scannCrono = 5
+        else:
+          g.isScanning = True
+          g.scannCrono = 10
     # End of Bluetooth device scanning (offline mode)
        
     # Handle Pygame events
@@ -91,7 +84,7 @@ def Update():
 
     # Draw graphics on the screen
     DrawLoop()
-    pygame.display.update()
+    DisplayUpdate()
     # end of Draw graphics on the screen
 
     # Update Timers
@@ -100,9 +93,11 @@ def Update():
         g.scannCrono -= (time.time() - g.lastLoopTime)
 
       g.lastLoopTime = time.time()
-
-      
     # End of Update Timers
+
+    # Debug Memory
+    print ("MEM", end="\r")
+    # End of Debug Memory
 
   # End of Update() ========================================
     
