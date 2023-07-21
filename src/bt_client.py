@@ -1,13 +1,13 @@
 import time
 import threading
 import asyncio
-
-# import logging
 from typing import Any
-
+from typing import Sequence
 from bleak import BleakScanner, BLEDevice
 
-from typing import Sequence
+# from memory_profiler import profile
+# import logging
+
 
 import src.globals as g
 
