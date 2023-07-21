@@ -63,6 +63,4 @@ def openSerial(port:str):
 
 
 def sendValueSerial(arduino:serial.Serial, value: int):
-    # Translate value int to bytes
-    byteValue = value.to_bytes(2, byteorder='big')
-    arduino.write(byteValue)
+    arduino.write(str(value).encode('utf-8'))
