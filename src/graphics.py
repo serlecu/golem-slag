@@ -104,7 +104,7 @@ def DrawLoop():
         debugScannedDevicesOffline(g.offlineMacList, g.screen)
 
 
-def DisplayUpdate():
+def UpdateDisplay():
     global deltaTime
     
     pygame.display.update()
