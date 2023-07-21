@@ -6,7 +6,7 @@ from src.bt_client import *
 from src.bt_server import *
 from src.graphics import *
 from src.debug_display import *
-# from src.serial_send import *
+from src.serial_send import *
 
 def Setup():
   import src.globals as g
@@ -25,6 +25,11 @@ def Setup():
     if not g.serverLessMode:
       loop = asyncio.get_event_loop()
       loop.run_until_complete(initServerAsync(loop))
+
+  # Initialize Serial
+  railSerialThread = threading.Thread(target=railSerialThread, daemon=False)
+  railSerialThread.start()
+
   
   
 # End of Setup() ========================================

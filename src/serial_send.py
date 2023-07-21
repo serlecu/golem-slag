@@ -1,4 +1,5 @@
 import time
+import random
 import serial
 import serial.tools.list_ports
 
@@ -19,11 +20,12 @@ def railSerialThread():
       time.sleep(1)
 
     while not g.killRailSerial:
-        if g.railDelay > 0:
-            sendValueSerial( int(g.railDelay * 1000) ) #send millis
+        if not g.offlineMode:
+            sendValueSerial(arduino, g.railDelay ) #send millis
         else:
-            sendValueSerial(2000)
-        time.sleep(1)
+            randomVal = random.randint(500, 1000)
+            sendValueSerial(arduino, randomVal)
+        time.sleep(2)
 
     if arduino is not None:
       arduino.close()
@@ -47,6 +49,7 @@ def openSerial(port:str):
     
 
 
-def sendValueSerial(value: int):
-    
-    arduino.write(b'9')
+def sendValueSerial(arduino:serial.Serial, value: int):
+    # Translate value int to bytes
+    byteValue = value.to_bytes(2, byteorder='big')
+    arduino.write(byteValue)

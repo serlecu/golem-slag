@@ -66,12 +66,10 @@ async def bleakLoopAsync():
           g.foundDevicesBleak = list(devices)
           g.writeDevices = False
 
-          # 3. Send values to rail
-          # ~ g.railSpeed = 50 + ( len(devices) * 5 )
-          # ~ g.railDelay = 1.0 - ( len(devices) * 0.07 )
-          # if len(devices) > 0:
-          #     g.railDelay = 1.0 / len(devices)
-          # else:
-          #     g.railDelay = 1.0
+          # 3. Update rail values
+          if len(devices) < 25:
+              g.railDelay = 1500 / (len(devices)+1)
+          else:
+              g.railDelay = 1500
             
         await asyncio.sleep(10)
