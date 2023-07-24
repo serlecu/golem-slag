@@ -35,12 +35,12 @@ async def railSerialThreadAsync():
                     except Exception as e:
                       print(f"Serial ERROR: {e}")
                   finally:
-                      asyncio.sleep(2)
+                      await asyncio.sleep(2)
               else:
                   randomVal = random.randint(500, 1000)
                   sendValueSerial(arduino, randomVal)
         finally:
-            asyncio.sleep(2)
+            await asyncio.sleep(2)
 
 def railSerialThread():
     portFound:bool = False

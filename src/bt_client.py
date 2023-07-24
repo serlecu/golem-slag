@@ -34,10 +34,10 @@ def setupBTAdapter():
 def bleakLoopThread():
     asyncio.run(bleakLoopAsync())
 
-    # asyncio.set_event_loop_policy(asyncio.ThreadedEventLoopPolicy())
-    # loop = asyncio.new_event_loop()
-    # asyncio.set_event_loop(loop)
-    # loop.run_until_complete(bleakLoopAsync())
+    asyncio.set_event_loop_policy(asyncio.ThreadedEventLoopPolicy())
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+    loop.run_until_complete(bleakLoopAsync())
     # loop.close()
 
     
