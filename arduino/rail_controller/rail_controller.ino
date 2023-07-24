@@ -97,7 +97,7 @@ void loop() {
 
   // Actualizar contadores
   speedTimer += millis() - lastLoopTime;
-  if (!railStopped && serialTimeout > 0) {
+  if (!railStopped && serialTimeout < 4000) {
     serialTimeout += millis() - lastLoopTime;
   }
 }
