@@ -27,8 +27,10 @@ def Setup():
       loop.run_until_complete(initServerAsync(loop))
 
   # Initialize Serial
-  serialThread = threading.Thread(target=railSerialThread, daemon=False)
-  serialThread.start()
+  loop = asyncio.get_event_loop()
+  loop.run_until_complete(railSerialThreadAsync())
+  # serialThread = threading.Thread(target=railSerialThread, daemon=False)
+  # serialThread.start()
 
   
   
@@ -40,6 +42,11 @@ def Update():
   
   # Start Bluetooth device scanning thread (online mode)
   if not g.offlineMode:
+    # not thread but async ver
+    loop = asyncio.get_event_loop()
+    loop.run_until_complete(bleakLoopAsync(loop))
+    #
+
     scan_thread = threading.Thread(target=bleakLoopThread, daemon=False)
     # daemon is false so the thread has to be killed manualy before closing main thread
     scan_thread.start()
