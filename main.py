@@ -27,10 +27,10 @@ def Setup():
       loop.run_until_complete(initServerAsync(loop))
 
   # Initialize Serial
-  loop = asyncio.get_event_loop()
-  loop.run_until_complete(railSerialThreadAsync())
-  # serialThread = threading.Thread(target=railSerialThread, daemon=False)
-  # serialThread.start()
+  # loop = asyncio.get_event_loop()
+  # loop.run_until_complete(railSerialThreadAsync())
+  serialThread = threading.Thread(target=railSerialThread, daemon=False)
+  serialThread.start()
 
   
   
