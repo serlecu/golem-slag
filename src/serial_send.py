@@ -45,8 +45,10 @@ async def railSerialThreadAsync():
 def railSerialThread():
     portFound:bool = False
     arduino:serial.Serial = None
+    print("Serial Thread started")
 
     while not g.killRail:
+      print("Serial Port Check")
       port = findSerial()
       if port is not None:
         try:
@@ -75,6 +77,8 @@ def railSerialThread():
                   sendValueSerial(arduino, randomVal)
         finally:
             time.sleep(2)
+        print("Lost Arduino connection")
+    print("Serial Thread killed")
 
 
 def findSerial():
