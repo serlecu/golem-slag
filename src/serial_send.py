@@ -2,6 +2,7 @@ import time
 import random
 import serial
 import serial.tools.list_ports
+import asyncio
 
 import src.globals as g
 
@@ -34,12 +35,12 @@ async def railSerialThreadAsync():
                     except Exception as e:
                       print(f"Serial ERROR: {e}")
                   finally:
-                      time.sleep(2)
+                      asyncio.sleep(2)
               else:
                   randomVal = random.randint(500, 1000)
                   sendValueSerial(arduino, randomVal)
         finally:
-            time.sleep(2)
+            asyncio.sleep(2)
 
 def railSerialThread():
     portFound:bool = False
