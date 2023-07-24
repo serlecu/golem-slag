@@ -60,7 +60,7 @@ void loop() {
       // convert serialIn to int
       int msgValue = String(serialIn).toInt();
       // set speedDelay
-      if msgValue > 1500 {
+      if (msgValue > 1500) {
         railStopped = true;
       } else {
         railStopped = false;
