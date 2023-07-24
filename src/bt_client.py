@@ -33,12 +33,7 @@ def setupBTAdapter():
 
 def bleakLoopThread():
     asyncio.run(bleakLoopAsync())
-
-    asyncio.set_event_loop_policy(asyncio.ThreadedEventLoopPolicy())
-    loop = asyncio.new_event_loop()
-    asyncio.set_event_loop(loop)
-    loop.run_until_complete(bleakLoopAsync())
-    # loop.close()
+    print("BLEAK client thread killed")
 
     
 async def bleakLoopAsync():
@@ -47,7 +42,7 @@ async def bleakLoopAsync():
     
     while not g.killBleak:
         
-        # print("BLEAK: start scanning")
+        print("BLEAK: start scanning")
         g.isScanning = True
         # 1. Scann
         try:
@@ -56,7 +51,7 @@ async def bleakLoopAsync():
           print(f"BLEAK 73: {e}")
           g.isScanning = False 
         else:
-          # print("BLEAK: end scanning")
+          print("BLEAK: end scanning")
           g.isScanning = False 
 
           # 2. Write resoults
