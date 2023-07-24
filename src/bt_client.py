@@ -41,7 +41,7 @@ def bleakLoopThread():
     # loop.close()
 
     
-async def bleakLoopAsync(_loop):
+async def bleakLoopAsync():
     g.killBleak = False
     devices: Sequence[BLEDevice]
     
