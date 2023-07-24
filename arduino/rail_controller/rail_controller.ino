@@ -4,6 +4,9 @@
 
 #define ENDSTOP_A 2
 
+byte nextByte;
+int serialIndex = 0;
+char serialIn[8] = "";
 unsigned char _i2c_add = 0x0f;
 int _step_cnt = 0;
 int dir = 1;
@@ -45,23 +48,31 @@ void loop() {
   }
 
 
-  if (Serial.available() > 0) {
-    // look for the next valid integer in the incoming serial stream:
-    int msgValue = Serial.parseInt();
-    // Read Serial for value 
-    if (Serial.read() == '\n') {
-      // constrain the values to 0 - 255 and invert
+  if (Serial.available()) {
+    //read next byte in serial stream
+    nextByte = Serial.read();
+    // check if nextByte is a newline character
+    if (nextByte == '\n') {
+      // append null character to serialIn bytearray
+      serialIn[serialIndex++] = '\0';
+      // convert serialIn to int
+      // int msgValue = atoi(serialIn);
+      int msgValue = String(serialIn).toInt();
+      // set speedDelay
       speedDelay = constrain(msgValue, 40, 1000);
+      // clear serialIn
+      serialIn[0] = '\0';
+      serialIndex = 0;
       digitalWrite(13, HIGH);
+    } else {
+      // append to serialIn bytearray
+      serialIn[serialIndex] = nextByte;
+      digitalWrite(13, LOW);
+      serialIndex++;
     }
-  }
-  else {
+  } else {
     digitalWrite(13, LOW);
   }
-
-  //speedDelay = map(analogRead(A0), 0, 1024, 2, 1000);
-  // Serial.print("Speed: ");
-  // Serial.println(speedDelay);
 
   // Enviar orden a driver
   stepperRun(1 * dir); // paso
@@ -72,24 +83,6 @@ void loop() {
 
   // Actualizar contador
   speedTimer += millis() - lastLoopTime;
-
-  //Reset after 5 mins
-  // if (resetTimer > 4000) {
-  //   if (resetCounter < 5 ) { // 5 mins = 75
-  //     // wdt_reset(); //avoids reset
-  //     resetCounter ++;
-  //     resetTimer = 0;
-  //   }
-  //   else {
-  //     Serial.println("RESET");
-  //     Serial.println(millis());
-  //     resetCounter = 0;
-  //     delay(10);
-  //     resetFunc(); // la llamo con esto reset
-  //   }
-  // }
-  // resetTimer += millis() - lastLoopTime;
-
 }
 
 void handleEndSwitches(){
