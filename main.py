@@ -47,9 +47,9 @@ def Update():
     loop.run_until_complete(bleakLoopAsync(loop))
     #
 
-    scan_thread = threading.Thread(target=bleakLoopThread, daemon=False)
+    # scan_thread = threading.Thread(target=bleakLoopThread, daemon=False)
     # daemon is false so the thread has to be killed manualy before closing main thread
-    scan_thread.start()
+    # scan_thread.start()
   # End of Start Bluetooth device scanning thread (online mode)
 
   # Update Loop
