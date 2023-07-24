@@ -4,6 +4,8 @@
 
 #define ENDSTOP_A 2
 
+bool railStopped = true;
+unsigned long serialTimeout = 0;
 byte nextByte;
 int serialIndex = 0;
 char serialIn[8] = "";
@@ -56,10 +58,14 @@ void loop() {
       // append null character to serialIn bytearray
       serialIn[serialIndex++] = '\0';
       // convert serialIn to int
-      // int msgValue = atoi(serialIn);
       int msgValue = String(serialIn).toInt();
       // set speedDelay
-      speedDelay = constrain(msgValue, 40, 1000);
+      if msgValue > 1500 {
+        railStopped = true;
+      } else {
+        railStopped = false;
+        speedDelay = constrain(msgValue, 40, 1000);
+      }
       // clear serialIn
       serialIn[0] = '\0';
       serialIndex = 0;
@@ -70,19 +76,30 @@ void loop() {
       digitalWrite(13, LOW);
       serialIndex++;
     }
+    serialTimeout = 0;
   } else {
     digitalWrite(13, LOW);
   }
 
-  // Enviar orden a driver
-  stepperRun(1 * dir); // paso
-  stop();
-  delay(speedDelay);// 10-100
+  // Para rail si no hay recepción Serial
+  if (serialTimeout >= 4000 && !railStopped) {
+    railStopped = true;
+  }
+
+  if (!railStopped) {
+    // Enviar orden a driver
+    stepperRun(1 * dir); // paso
+    stop();
+    delay(speedDelay);// 10-100
+  }
 
   handleEndSwitches();
 
-  // Actualizar contador
+  // Actualizar contadores
   speedTimer += millis() - lastLoopTime;
+  if (!railStopped && serialTimeout > 0) {
+    serialTimeout += millis() - lastLoopTime;
+  }
 }
 
 void handleEndSwitches(){
