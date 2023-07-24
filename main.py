@@ -39,6 +39,7 @@ def Setup():
 
 def Update():
   import src.globals as g
+  count = 0
   
   # Start Bluetooth device scanning thread (online mode)
   if not g.offlineMode:
@@ -99,7 +100,15 @@ def Update():
     # End of Update Timers
 
     # Debug Memory
-    # print ("MEM", end="\r")
+    if count == 0:
+      print (".", end="\r")
+      count += 1
+    elif count == 1:
+      print ("..", end="\r")
+      count += 1
+    elif count == 2:
+      print ("...", end="\r")
+      count = 0
     # End of Debug Memory
 
   # End of Update() ========================================
