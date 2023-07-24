@@ -111,3 +111,4 @@ if __name__ == "__main__":
   print(f"Golem Slag started at {time.strftime('%H:%M:%S', time.localtime())}")
   Setup()
   Update()
+  print("Golem Slag closed")
