@@ -69,6 +69,7 @@ void loop() {
       // clear serialIn
       serialIn[0] = '\0';
       serialIndex = 0;
+      serialFlush();
       digitalWrite(13, HIGH);
     } else {
       // append to serialIn bytearray
@@ -208,4 +209,10 @@ void receiveEvents(int numBytes)
   // Serial.println(F("bytes recieved"));
   // Serial.print(F("recieved value : "));
   // Serial.println(n);
+}
+
+void serialFlush(){
+  while(Serial.available() > 0) {
+      char t = Serial.read();
+    }
 }
