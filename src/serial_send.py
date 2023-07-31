@@ -53,7 +53,7 @@ def railSerialThread():
       port = findSerial()
       if port is not None:
         try:
-          arduino = openSerial(port)
+          arduino = openSerial(port.device)
         except Exception as e:
           print(f"Serial ERROR: {e}")
           
@@ -97,7 +97,7 @@ def findSerial():
     ports = serial.tools.list_ports.comports()
     for port in ports:
         if "USB" in port.name:
-            railSerial = port.device
+            railSerial = port
             print(f"Serial Port: {railSerial}")
             return railSerial
     return None
