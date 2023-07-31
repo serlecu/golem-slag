@@ -79,8 +79,12 @@ def railSerialThread():
                       randomVal = random.randint(500, 1000)
                       sendValueSerial(arduino, randomVal)
               else:
-                  arduino.close()
                   g.serialState = False
+                  try:
+                      #arduino.__del__()
+                      arduino.close()
+                  except Exception as e:
+                      print(f"Serial ERROR: {e}")
         finally:
             time.sleep(2)
         print("Lost Arduino connection")
@@ -106,6 +110,7 @@ def openSerial(port:str):
 
 def checkConnected(arduPort):
     myports = [tuple(p) for p in list(serial.tools.list_ports.comports())]
+    print(myports)
     if arduPort not in myports:
         print("Arduino Lost!")
         return False
