@@ -107,7 +107,7 @@ def openSerial(port:str):
 def checkConnected(arduPort):
     myports = [tuple(p) for p in list(serial.tools.list_ports.comports())]
     if arduPort not in myports:
-        print "Arduino Lost!"
+        print("Arduino Lost!")
         return False
     else:
         return True
