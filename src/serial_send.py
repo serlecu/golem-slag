@@ -53,7 +53,7 @@ def railSerialThread():
       port = findSerial()
       if port is not None:
         try:
-          arduino = openSerial(port.device)
+          arduino = openSerial(port)
         except Exception as e:
           print(f"Serial ERROR: {e}")
           
@@ -89,7 +89,7 @@ def railSerialThread():
             time.sleep(2)
         print("Lost Arduino connection")
       else:
-        print("Arduino not found")
+        print("ls /dev/ttyUSB* not found")
         time.sleep(2)
     print("Serial Thread killed")
 
@@ -100,7 +100,7 @@ def findSerial():
     ports = serial.tools.list_ports.comports()
     for port in ports:
         if "USB" in port.name:
-            arduinoPort = port
+            arduinoPort = port.device
             print(f"Serial Port: {arduinoPort}")
             return arduinoPort
     return None
@@ -114,11 +114,13 @@ def openSerial(port:str):
 def checkConnected(arduPort):
     ports = serial.tools.list_ports.comports()
     print(ports)
-    if arduPort not in ports:
-        print("Arduino Lost!")
-        return False
-    else:
-        return True
+    
+    for port in ports:
+      if arduPort == port.device:
+          return True
+    
+    print("Arduino Lost!")
+    return False
 
 
 def sendValueSerial(arduino:serial.Serial, value: int):
