@@ -88,6 +88,9 @@ def railSerialThread():
         finally:
             time.sleep(2)
         print("Lost Arduino connection")
+      else:
+        print("Arduino not found")
+        time.sleep(2)
     print("Serial Thread killed")
 
 
