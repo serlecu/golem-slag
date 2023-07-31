@@ -24,21 +24,22 @@ async def railSerialThreadAsync():
           g.serialState = True
 
           while g.serialState:
-              if not g.offlineMode:
-                  try:
-                    sendValueSerial(arduino, g.railDelay ) #send millis
-                  except Exception as e:
-                    print(f"Serial ERROR: {e}")
-                    g.serialState = False
-                    try:
-                      arduino.__del__()
-                    except Exception as e:
-                      print(f"Serial ERROR: {e}")
-                  finally:
-                      await asyncio.sleep(2)
-              else:
+              try:
+                if not g.offlineMode:
+                  sendValueSerial(arduino, g.railDelay ) #send millis
+                else:
                   randomVal = random.randint(500, 1000)
                   sendValueSerial(arduino, randomVal)
+              except Exception as e:
+                print(f"Serial ERROR: {e}")
+                g.serialState = False
+                try:
+                  # arduino.__del__()
+                  arduino.close()
+                except Exception as e:
+                  print(f"Serial ERROR: {e}")
+              finally:
+                  await asyncio.sleep(2)
         finally:
             await asyncio.sleep(2)
 
