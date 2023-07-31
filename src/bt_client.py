@@ -42,7 +42,7 @@ async def bleakLoopAsync():
     
     while not g.killBleak:
         
-        print("BLEAK: start scanning")
+        # print("BLEAK: start scanning")
         g.isScanning = True
         # 1. Scann
         try:
@@ -51,7 +51,7 @@ async def bleakLoopAsync():
           print(f"BLEAK 73: {e}")
           g.isScanning = False 
         else:
-          print("BLEAK: end scanning")
+          # print("BLEAK: end scanning")
           g.isScanning = False 
 
           # 2. Write resoults
