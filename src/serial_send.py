@@ -61,7 +61,7 @@ def railSerialThread():
           g.serialState = True
 
           while g.serialState:
-              # if checkConnected(port):
+              if checkConnected(port):
                   if not g.offlineMode:
                       try:
                           sendValueSerial(arduino, g.railDelay ) #send millis
@@ -97,9 +97,9 @@ def findSerial():
     ports = serial.tools.list_ports.comports()
     for port in ports:
         if "USB" in port.name:
-            railSerial = port
-            print(f"Serial Port: {railSerial}")
-            return railSerial
+            arduinoPort = port
+            print(f"Serial Port: {arduinoPort}")
+            return arduinoPort
     return None
     
 
@@ -109,9 +109,9 @@ def openSerial(port:str):
     
 
 def checkConnected(arduPort):
-    myports = [tuple(p) for p in list(serial.tools.list_ports.comports())]
-    print(myports)
-    if arduPort not in myports:
+    ports = serial.tools.list_ports.comports()
+    print(ports)
+    if arduPort not in ports:
         print("Arduino Lost!")
         return False
     else:
