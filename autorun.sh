@@ -9,12 +9,12 @@ pip install -r requirements.txt
 
 echo "Config Bluetooth"
 # some lines may not be required on each reboot
-sudo hciconfig hci0 piscan
-sudo systemctl daemon-reload
-sudo service bluetooth restart
-sudo sdptool add SP
-sudo chmod o+rw /var/run/sdp
-sudo hciconfig hci0 piscan
+# sudo hciconfig hci0 piscan
+# sudo systemctl daemon-reload
+# sudo service bluetooth restart
+# sudo sdptool add SP
+# sudo chmod o+rw /var/run/sdp
+# sudo hciconfig hci0 piscan
 
 echo "run python"
 python3 ~/Desktop/golem-slag/main.py
