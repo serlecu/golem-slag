@@ -67,12 +67,12 @@ def railSerialThread():
                           sendValueSerial(arduino, g.railDelay ) #send millis
                       except Exception as e:
                           print(f"Serial ERROR: {e}")
-                          g.serialState = False
-                          try:
-                              #arduino.__del__()
-                              arduino.close()
-                          except Exception as e:
-                              print(f"Serial ERROR: {e}")
+                          # g.serialState = False
+                          # try:
+                          #     #arduino.__del__()
+                          #     arduino.close()
+                          # except Exception as e:
+                          #     print(f"Serial ERROR: {e}")
                       finally:
                           time.sleep(2)
                   else:
