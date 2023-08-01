@@ -5,6 +5,7 @@
 #define ENDSTOP_A 2
 
 bool railStopped = true;
+bool wireError = false;
 unsigned long serialTimeout = 0;
 byte nextByte;
 int serialIndex = 0;
@@ -15,7 +16,7 @@ int dir = 1;
 bool wasTriggered = false;
 int speedPot = 80;// 45-200
 int speedDelay = 50;// 45-200
-int speedTimer = 0;
+int reconnectWireTimer = 0;
 unsigned long lastLoopTime = 0;
 int resetCounter = 0;
 unsigned long resetTimer = 0;
@@ -33,6 +34,9 @@ void setup() {
 
   Wire.begin();
   delay(1000);
+  if (stepperFrequence(F_490Hz) != 0){
+    wireError = true;
+  }
   Wire.onRequest(requestEvents);
   Wire.onReceive(receiveEvents);
 
@@ -44,16 +48,13 @@ void setup() {
 void loop() {
   // Temporizador
   lastLoopTime = millis();
-  if (speedTimer > ((random(4)+4) * 60000)) {
-    // speedDelay = random(156) + 45;
-    speedTimer = 0;
-  }
-  
-  if( speedTimer > 2000 ){
-    resetWire();
-    speedTimer = 0;
-  }
+  // // fake inSerial
+  // if (speedTimer > ((random(4)+4) * 60000)) {
+  //   // speedDelay = random(156) + 45;
+  //   speedTimer = 0;
+  // }
 
+  // Serial In
   if (Serial.available()) {
     //read next byte in serial stream
     nextByte = Serial.read();
@@ -75,29 +76,40 @@ void loop() {
       serialIndex = 0;
       serialFlush();
       digitalWrite(13, HIGH);
+      serialTimeout = 0;
     } else {
       // append to serialIn bytearray
       serialIn[serialIndex] = nextByte;
       digitalWrite(13, LOW);
       serialIndex++;
     }
-    serialTimeout = 0;
   } else {
     digitalWrite(13, LOW);
   }
 
-  // Para rail si no hay recepción Serial
+  // Parar rail si no hay recepción Serial
   if (serialTimeout >= 4000 && !railStopped) {
     railStopped = true;
+    Serial.end();
+    delay(100);
+    Serial.begin(9600);
+    delay(1000);
+    serialTimeout = 0;
   }
 
-  if (!railStopped) {
+  if( wireError && reconnectWireTimer > 2000 ){
+    resetWire();
+    reconnectWireTimer = 0;
+  }
+
+  // I2C Out
+  if (!railStopped && !wireError) {
     // Enviar orden a driver
     if ( stepperRun(1 * dir) != 0 ) { // paso
-      resetFunc();
+      wireError = true;
     }
     if ( stop() != 0) { // parada
-      resetFunc();
+      wireError = true;
     }
     
     delay(speedDelay);// 10-100
@@ -106,7 +118,9 @@ void loop() {
   handleEndSwitches();
 
   // Actualizar contadores
-  speedTimer += millis() - lastLoopTime;
+  if (reconnectWireTimer < 3000){
+    reconnectWireTimer += millis() - lastLoopTime;
+  }
   if (!railStopped && serialTimeout < 4000) {
     serialTimeout += millis() - lastLoopTime;
   }
@@ -126,27 +140,27 @@ void handleEndSwitches(){
   }
 }
 
-int stop() {
+byte stop() {
   Wire.beginTransmission(_i2c_add); // begin transmission
   Wire.write(MotorSpeedSet);              // set pwm header
   Wire.write(0);              // send speed of motor1
   Wire.write(0);              // send speed of motor2
-  int status = Wire.endTransmission();    		        // stop transmitting
+  byte status = Wire.endTransmission();    		        // stop transmitting
   delay(4);
   return status;	
 }
 
-int direction(unsigned char _direction) {
+byte direction(unsigned char _direction) {
     Wire.beginTransmission(_i2c_add); // begin transmission
     Wire.write(DirectionSet);               // Direction control header
     Wire.write(_direction);                 // send direction control information
     Wire.write(Nothing);                    // need to send this byte as the third byte(no meaning)
-    int status = Wire.endTransmission();    		        // stop transmitting
+    byte status = Wire.endTransmission();    		        // stop transmitting
     delay(4); 				                // wait
     return status;
 }
 
-int stepperFrequence(unsigned char _frequence) {
+byte stepperFrequence(unsigned char _frequence) {
     if (_frequence < F_31372Hz || _frequence > F_30Hz) {
         Serial.println("frequence error! Must be F_31372Hz, F_3921Hz, F_490Hz, F_122Hz, F_30Hz");
         return;
@@ -155,12 +169,12 @@ int stepperFrequence(unsigned char _frequence) {
     Wire.write(PWMFrequenceSet);            // set frequence header
     Wire.write(_frequence);                 // send frequence
     Wire.write(Nothing);                    // need to send this byte as the third byte(no meaning)
-    int status = Wire.endTransmission();    		        // stop transmitting
+    byte status = Wire.endTransmission();    		        // stop transmitting
     delay(4); 				                // wait
     return status;
 }
 
-int stepperRun(int _step) {
+byte stepperRun(int _step) {
 
     int _direction = 1;
     if (_step > 0) {
@@ -177,7 +191,7 @@ int stepperRun(int _step) {
     Wire.write(MotorSpeedSet);              // set pwm header
     Wire.write(_speed1);              // send speed of motor1
     Wire.write(_speed2);              // send speed of motor2
-    int status = Wire.endTransmission();    		        // stop transmitting
+    byte status = Wire.endTransmission();    		        // stop transmitting
     delay(1); 				                // wait
     if( status != 0 ) {
       return status;
@@ -229,10 +243,12 @@ void receiveEvents(int numBytes)
 }
 
 void resetWire(){
-  Wire.end();
-  delay(1);
-  Wire.begin();
-  delay(1);
+  Wire.beginTransmission(_i2c_add);
+  byte err = Wire.endTransmission();
+  if (err == 0){
+    wireError = false;
+    stepperFrequence(F_490Hz); //Default: F_3921Hz
+  }
 }
 
 void serialFlush(){
