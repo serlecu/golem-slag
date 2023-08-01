@@ -48,7 +48,11 @@ void loop() {
     // speedDelay = random(156) + 45;
     speedTimer = 0;
   }
-
+  
+  if( speedTimer > 2000 ){
+    resetWire();
+    speedTimer = 0;
+  }
 
   if (Serial.available()) {
     //read next byte in serial stream
@@ -89,8 +93,13 @@ void loop() {
 
   if (!railStopped) {
     // Enviar orden a driver
-    stepperRun(1 * dir); // paso
-    stop();
+    if ( stepperRun(1 * dir) != 0 ) { // paso
+      resetFunc();
+    }
+    if ( stop() != 0) { // parada
+      resetFunc();
+    }
+    
     delay(speedDelay);// 10-100
   }
 
@@ -117,25 +126,27 @@ void handleEndSwitches(){
   }
 }
 
-void stop() {
+int stop() {
   Wire.beginTransmission(_i2c_add); // begin transmission
   Wire.write(MotorSpeedSet);              // set pwm header
   Wire.write(0);              // send speed of motor1
   Wire.write(0);              // send speed of motor2
-  Wire.endTransmission();    		        // stop transmitting
-  delay(4); 	
+  int status = Wire.endTransmission();    		        // stop transmitting
+  delay(4);
+  return status;	
 }
 
-void direction(unsigned char _direction) {
+int direction(unsigned char _direction) {
     Wire.beginTransmission(_i2c_add); // begin transmission
     Wire.write(DirectionSet);               // Direction control header
     Wire.write(_direction);                 // send direction control information
     Wire.write(Nothing);                    // need to send this byte as the third byte(no meaning)
-    Wire.endTransmission();                 // stop transmitting
+    int status = Wire.endTransmission();    		        // stop transmitting
     delay(4); 				                // wait
+    return status;
 }
 
-void stepperFrequence(unsigned char _frequence) {
+int stepperFrequence(unsigned char _frequence) {
     if (_frequence < F_31372Hz || _frequence > F_30Hz) {
         Serial.println("frequence error! Must be F_31372Hz, F_3921Hz, F_490Hz, F_122Hz, F_30Hz");
         return;
@@ -144,11 +155,12 @@ void stepperFrequence(unsigned char _frequence) {
     Wire.write(PWMFrequenceSet);            // set frequence header
     Wire.write(_frequence);                 // send frequence
     Wire.write(Nothing);                    // need to send this byte as the third byte(no meaning)
-    Wire.endTransmission();                 // stop transmitting
+    int status = Wire.endTransmission();    		        // stop transmitting
     delay(4); 				                // wait
+    return status;
 }
 
-void stepperRun(int _step) {
+int stepperRun(int _step) {
 
     int _direction = 1;
     if (_step > 0) {
@@ -165,8 +177,11 @@ void stepperRun(int _step) {
     Wire.write(MotorSpeedSet);              // set pwm header
     Wire.write(_speed1);              // send speed of motor1
     Wire.write(_speed2);              // send speed of motor2
-    Wire.endTransmission();    		        // stop transmitting
+    int status = Wire.endTransmission();    		        // stop transmitting
     delay(1); 				                // wait
+    if( status != 0 ) {
+      return status;
+    }
 
     if (_direction == 1) {				// Sentido Horario
         for (int i = 0; i < _step; i++) {
@@ -189,6 +204,8 @@ void stepperRun(int _step) {
             _step_cnt = (_step_cnt + 1) % 4;
         }
     }
+
+    return 0;
 }
 
 int n = 0;
@@ -209,6 +226,13 @@ void receiveEvents(int numBytes)
   // Serial.println(F("bytes recieved"));
   // Serial.print(F("recieved value : "));
   // Serial.println(n);
+}
+
+void resetWire(){
+  Wire.end();
+  delay(1);
+  Wire.begin();
+  delay(1);
 }
 
 void serialFlush(){
