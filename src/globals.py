@@ -15,16 +15,9 @@ screen: pygame.Surface
 
 
 # Rail
-i2cConnected = False
 killRail: bool = False
-lastEndSwitch: bool = False
-railDirection: bool = True
-railSpeed: int = 60
-railDelay: float = 1.0
-endSwitchCounter = 0
-syncState = False
-restartUSBFreq = 10.0
-restartUSBCrono: float = 10.0
+serialState = False
+railDelay: int = 1500
 
 
 # Bluetooth BLEAK Client
@@ -34,6 +27,7 @@ deviceInfo: str
 isScanning: bool
 scannCrono: float = 3.0
 scannFrequency: float = 20.0
+writeDevices = False
 foundDevicesBleak: list#[BLEDevice]
 # ~ matchedClients: list#[BleakClient]
 
@@ -44,13 +38,13 @@ failedNotifications: list
 
 
 # Bluetooth BLESS Server
-serverLessMode: bool = True
+serverLessMode: bool = False
 setupBless: bool = False
 runningBLEserver: bool = False
 
 
 # Offline Mode
-offlineMode: bool = True
+offlineMode: bool = False
 offlineListLen: int
 offlineMacList: list = [
     "SLAG_4e:dc:27 -> e4:5f:1:4e:dc:27",
@@ -93,7 +87,7 @@ def initGlobals():
     offlineListLen = random.randint(10, 16)
     print(f"Offline Mode: {offlineListLen} devices")
   
-  print(f"Initialize Golem Node #{nodeID}")
+  # print(f"Initialize Golem Node #{nodeID}")
 
 
 def shuffleOfflineList():
