@@ -11,15 +11,19 @@ railSerial:str = ""
 async def railSerialThreadAsync():
     portFound:bool = False
     arduino:serial.Serial = None
+    port = None
 
     while not g.killRail:
       port = findSerial()
-      if port is not None:
+      if port == None:
+         print("Arduino not Found")
+         await asyncio.sleep(2)
+      else:
         try:
           arduino = openSerial(port)
         except Exception as e:
-          print(f"Serial ERROR: {e}")
-          
+          port = None
+          print(f"Serial ERROR: {e}")  
         else:
           g.serialState = True
 
