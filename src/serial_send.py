@@ -100,12 +100,13 @@ def findSerial():
     global railSerial
 
     ports = serial.tools.list_ports.comports()
+    foundPort:str = ""
     for port in ports:
         if "USB" in port.name:
             arduinoPort = port.device
             print(f"Serial Port: {arduinoPort}")
-            return arduinoPort
-    return ""
+            foundPort = arduinoPort
+    return foundPort
     
 
 def openSerial(port:str):
