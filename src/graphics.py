@@ -93,6 +93,7 @@ def DrawLoop():
     test_ellipse(g.screen, (200, 200, 200, 100), 200, radarAngle)
 
     test_text(g.screen, (f"IsScanning: {g.isScanning}"), (g.screen.get_width()/2, 40), (255, 255, 255))
+    test_text(g.screen, (f"RailStatus: {g.serialState}"), (g.screen.get_width()/2, 50), (255, 255, 255))
 
     if not g.offlineMode:
       if not g.writeDevices:
