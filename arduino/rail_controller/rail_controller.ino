@@ -11,12 +11,13 @@ byte nextByte;
 int serialIndex = 0;
 char serialIn[8] = "";
 unsigned char _i2c_add = 0x0f;
+unsigned char STEPPER_FREQ = F_31372Hz; // Must be F_31372Hz, F_3921Hz, F_490Hz, F_122Hz, F_30Hz
 int _step_cnt = 0;
 int dir = 1;
 bool wasTriggered = false;
-int speedPot = 80;// 45-200
+int speedPot = 160;//80;// 45-200
 int speedDelay = 50;// 45-200
-int reconnectWireTimer = 0;
+uint32_t reconnectWireTimer = 0;
 unsigned long lastLoopTime = 0;
 int resetCounter = 0;
 unsigned long resetTimer = 0;
@@ -28,17 +29,30 @@ void setup() {
   // wdt_disable(); //init reset Watchdog
 
   Serial.begin(9600);
+  delay(2000);
+  Serial.println("Ready to ROCK!");
+
   pinMode(13, OUTPUT);
   pinMode(2, INPUT);
   pinMode(3, INPUT);
+  
+  pinMode(8, INPUT);
 
   Wire.begin();
   delay(1000);
-  if (stepperFrequence(F_490Hz) != 0){
+  if (stepperFrequence(STEPPER_FREQ) != 0){
     wireError = true;
   }
   Wire.onRequest(requestEvents);
   Wire.onReceive(receiveEvents);
+
+  // pinMode(SCL,OUTPUT); // SCL = 19
+  // for(int i = 0; i<9; i++){
+  //   digitalWrite(SCL, HIGH);
+  //   delayMicroseconds(2);
+  //   digitalWrite(SCL, LOW);
+  //   delayMicroseconds(2);
+  // }
 
   speedDelay = random(156) + 45;
 
@@ -53,6 +67,8 @@ void loop() {
   //   // speedDelay = random(156) + 45;
   //   speedTimer = 0;
   // }
+
+  
 
   // Serial In
   if (Serial.available()) {
@@ -89,17 +105,20 @@ void loop() {
 
   // Parar rail si no hay recepción Serial
   if (serialTimeout >= 4000 && !railStopped) {
+    Serial.println(F("Ya no se reciben mensajes serial"));
     railStopped = true;
-    Serial.end();
-    delay(100);
-    Serial.begin(9600);
-    delay(1000);
-    serialTimeout = 0;
+    // Serial.end();
+    // delay(1000);
+    // Serial.begin(9600);
+    // delay(1000);
+    // serialTimeout = 0;
+    // Serial.println(F("Serial reabierto"));
   }
 
   if( wireError && reconnectWireTimer > 2000 ){
-    resetWire();
+    Serial.println(F("Reconectando I2C ..."));
     reconnectWireTimer = 0;
+    resetWire();
   }
 
   // I2C Out
@@ -107,9 +126,11 @@ void loop() {
     // Enviar orden a driver
     if ( stepperRun(1 * dir) != 0 ) { // paso
       wireError = true;
+      Serial.println(F("Error en conexión I2C al enviar orden de PASO"));
     }
     if ( stop() != 0) { // parada
       wireError = true;
+      Serial.println(F("Error en conexión I2C al enviar orden de PARADA"));
     }
     
     delay(speedDelay);// 10-100
@@ -118,7 +139,7 @@ void loop() {
   handleEndSwitches();
 
   // Actualizar contadores
-  if (reconnectWireTimer < 3000){
+  if (reconnectWireTimer < 3000 && wireError){
     reconnectWireTimer += millis() - lastLoopTime;
   }
   if (!railStopped && serialTimeout < 4000) {
@@ -200,22 +221,32 @@ byte stepperRun(int _step) {
     if (_direction == 1) {				// Sentido Horario
         for (int i = 0; i < _step; i++) {
             switch (_step_cnt) {
-                case 0 : direction(0b0001); direction(0b0101); break;
-                case 1 : direction(0b0100); direction(0b0110); break;
-                case 2 : direction(0b0010); direction(0b1010); break;
-                case 3 : direction(0b1000); direction(0b1001); break;
+                case 0 : direction(0b0001); break;
+                case 1 : direction(0b0101); break;
+                case 2 : direction(0b0100); break;
+                case 3 : direction(0b0110); break;
+
+                case 4 : direction(0b0010); break;
+                case 5 : direction(0b1010); break;
+                case 6 : direction(0b1000); break;
+                case 7 : direction(0b1001); break;
             }
-            _step_cnt = (_step_cnt + 1) % 4;
+            _step_cnt = (_step_cnt + 1) % 8;
         }
     } else if (_direction == -1) { // Sentido Anti-horario
         for (int i = 0; i < _step; i++) {
             switch (_step_cnt) {
-                case 0 : direction(0b1000); direction(0b1010); break;
-                case 1 : direction(0b0010); direction(0b0110); break;
-                case 2 : direction(0b0100); direction(0b0101); break;
-                case 3 : direction(0b0001); direction(0b1001); break;
+                case 0 : direction(0b1001); break;
+                case 1 : direction(0b1000); break;
+                case 2 : direction(0b1010); break;
+                case 3 : direction(0b0010); break;
+
+                case 4 : direction(0b0110); break;
+                case 5 : direction(0b0100); break;
+                case 6 : direction(0b0101); break;
+                case 7 : direction(0b0001); break;
             }
-            _step_cnt = (_step_cnt + 1) % 4;
+            _step_cnt = (_step_cnt + 1) % 8;
         }
     }
 
@@ -226,28 +257,38 @@ int n = 0;
 
 void requestEvents()
 {
-  // Serial.println(F("---> recieved request"));
-  // Serial.print(F("sending value : "));
-  // Serial.println(n);
-  Wire.write(n);
+  Serial.println(F("Recibidos datos I2C: "));
+  // Wire.write(n);
 }
 
 void receiveEvents(int numBytes)
 {  
-  // Serial.println(F("---> recieved events"));
   n = Wire.read();
-  // Serial.print(numBytes);
-  // Serial.println(F("bytes recieved"));
-  // Serial.print(F("recieved value : "));
-  // Serial.println(n);
+  Serial.println(F("Recibidos datos I2C: "));
 }
 
 void resetWire(){
+  //restart board
+  // pinMode(8, OUTPUT);
+  // digitalWrite(8, LOW);
+  // delay(100);
+  // pinMode(8, INPUT);
+  // delay(2000);
+
+  // for(int i = 0; i<9; i++){
+  //   digitalWrite(SCL, HIGH);
+  //   delayMicroseconds(2);
+  //   digitalWrite(SCL, LOW);
+  //   delayMicroseconds(2);
+  // }
+
+  //restart I2C
   Wire.beginTransmission(_i2c_add);
   byte err = Wire.endTransmission();
   if (err == 0){
     wireError = false;
-    stepperFrequence(F_490Hz); //Default: F_3921Hz
+    stepperFrequence(STEPPER_FREQ); //Default: F_3921Hz
+    reconnectWireTimer = 0;
   }
 }
 
